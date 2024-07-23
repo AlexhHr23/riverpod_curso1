@@ -2,57 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerWidget {
-
-
-  HomeScreen({super.key});
-
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
 
-    final counter = ref.watch(counterProvider);
+    final counter = ref.read(counterProvider);
     
+    print('Construcción de home screen');
+
     return Scaffold(
       appBar: AppBar(
-        
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        
-        title: Text('Counter'),
+        title: const Text('Home Screnn'),
       ),
-      body: Center(
-       
-        child: Column(
-          
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'You have pushed the button this many times:',
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Consumer(
+              builder: (context, ref, _) {
+                final counter = ref.watch(counterProvider).counter;
+                return Text('$counter');
+              }
             ),
-            Text(
-              '${counter.counter}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(),
+          const Text('Presiona el boton para aumentar el valor')
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => counter.increment(),
-        tooltip: 'Increment',
+        onPressed: counter.increment,
+
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
 
-final counterProvider = ChangeNotifierProvider<Counter>((ref) => Counter());
+final counterProvider = ChangeNotifierProvider((ref) => Counter());
 
-class Counter with ChangeNotifier {
-  
+class Counter extends ChangeNotifier {
+
   int counter = 0;
 
   increment() {
+
     counter++;
     notifyListeners();
+
   }
 
 }
